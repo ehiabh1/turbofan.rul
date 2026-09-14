@@ -12,4 +12,9 @@ def load_fd(subset="FD001"):
     rul = pd.read_csv(DATA_DIR / f"RUL_{subset}.txt", header=None, names=["RUL"])
     # Train engines run to failure, so RUL = last cycle - current cycle
     train["RUL"] = train.groupby("unit")["cycle"].transform("max") - train["cycle"]
+    # Test engines stop early; RUL_*.txt gives the true RUL at each unit's last cycle
+    rul_by_unit = rul["RUL"].copy()
+    rul_by_unit.index = range(1, len(rul) + 1)
+    test["RUL"] = test["unit"].map(rul_by_unit) + (
+        test.groupby("unit")["cycle"].transform("max") - test["cycle"])
     return train, test, rul
