@@ -18,5 +18,6 @@ def drop_dead(df, drop_near_dead=True, drop_ops=True):
 
 
 def clip_rul(df, cap=RUL_CAP):
-    # YOUR CODE: return a copy of df with RUL capped at `cap`
-    pass
+    out = df.copy()
+    out["RUL"] = out["RUL"].clip(upper=cap)
+    return out
