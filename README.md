@@ -91,17 +91,10 @@ there, which is the cheaper direction to be wrong in.
 - **FD001 only.** FD002 and FD004 have six operating conditions, so the
   data needs grouping by condition before any of this transfers.
 
-## Running it
-pip install -r requirements.txt
-python -m src.train
+Running it:
 
+<pre> ## Running it ``` pip install -r requirements.txt python -m src.train ``` Download the data first — see `data/README.md`. </pre>
 
-Download the data first — see `data/README.md`.
+Repo structure:
 
-## Repo structure
-src/load_data.py read FD001, attach RUL labels to train and test
-src/preprocess.py drop uninformative columns, cap RUL
-src/evaluate.py RMSE and NASA score
-src/train.py runs the whole thing end to end
-notebooks/ data exploration and baseline development
-results/figures/ plots
+<pre> ## Repo structure ``` src/load_data.py read FD001, attach RUL labels to train and test src/preprocess.py drop uninformative columns, cap RUL src/evaluate.py RMSE and NASA score src/train.py runs the whole thing end to end notebooks/ data exploration and baseline development results/figures/ plots ``` </pre>
