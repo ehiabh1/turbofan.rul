@@ -37,6 +37,10 @@ and shows no trend, so it goes too — that one's a judgement call.
 Operating settings 1 and 2 only wobble around a single setting in this
 subset, so they carry nothing useful either. That leaves 14 sensors.
 
+Standard deviation is a misleading test here: several of the constant
+sensors report values around 1e-11 rather than exactly zero, which is
+floating-point noise. Counting distinct values is the reliable check.
+
 **Capping RUL at 125.** Early in an engine's life the sensors look flat,
 so there's no way to tell a young engine with 250 flights left from one
 with 30 — the difference comes from manufacturing variation the sensors
@@ -75,6 +79,12 @@ that matters most in practice. They spread out for healthier engines,
 and most sit below the 125 cap — the model errs on the cautious side
 there, which is the cheaper direction to be wrong in.
 
+![Sensor degradation](results/figures/sensor_degradation.png)
+
+Sensor traces for five engines. Readings are flat and noisy early on,
+then bend away in the last 100 flights or so, which is what makes the
+125 cap a sensible place to stop labelling.
+
 ## Limitations and what I'd do next
 
 - **A few bad predictions dominate the NASA score.** Because the penalty
@@ -91,14 +101,17 @@ there, which is the cheaper direction to be wrong in.
 - **FD001 only.** FD002 and FD004 have six operating conditions, so the
   data needs grouping by condition before any of this transfers.
 
-Running it
-Install dependencies: pip install -r requirements.txt
-Download the data — see data/README.md
-Run the pipeline: python -m src.train
-Repo structure
-src/load_data.py — read FD001, attach RUL labels to train and test
-src/preprocess.py — drop uninformative columns, cap RUL
-src/evaluate.py — RMSE and NASA score
-src/train.py — runs the whole thing end to end
-notebooks/ — data exploration and baseline development
-results/figures/ — plots
+## Running it
+
+1. Install dependencies: `pip install -r requirements.txt`
+2. Download the data — see `data/README.md`
+3. Run the pipeline: `python -m src.train`
+
+## Repo structure
+
+- `src/load_data.py` — read FD001, attach RUL labels to train and test
+- `src/preprocess.py` — drop uninformative columns, cap RUL
+- `src/evaluate.py` — RMSE and NASA score
+- `src/train.py` — runs the whole thing end to end
+- `notebooks/` — data exploration and baseline development
+- `results/figures/` — plots
