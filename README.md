@@ -48,3 +48,54 @@ degradation actually shows.
 **Scoring at the final flight only.** The question is one prediction per
 test engine, at the moment its data stops, so that's where the models
 are scored.
+
+## Results
+
+Scored on the 100 test engines, at each engine's final recorded flight.
+
+| Model | RMSE (flights) | NASA score |
+|---|---|---|
+| Always predict the average | 41.94 | — |
+| Random forest | 17.19 | 914.7 |
+
+RMSE is the average size of the error. The NASA score is the metric from
+NASA's 2008 competition: it adds up a penalty for every engine, and
+punishes predicting *too much* life left far more harshly than too
+little, because an unexpected failure costs more than an early
+inspection.
+
+The first row is a sanity check rather than a model — it predicts the
+same number for every engine. The random forest more than halves that
+error, so it is learning something real from the sensors.
+
+![Predicted vs actual RUL](results/figures/pred_vs_actual.png)
+
+Predictions are tightest for engines close to failure, which is the case
+that matters most in practice. They spread out for healthier engines,
+and most sit below the 125 cap — the model errs on the cautious side
+there, which is the cheaper direction to be wrong in.
+
+## Limitations and what I'd do next
+
+- **A few bad predictions dominate the NASA score.** Because the penalty
+  grows exponentially, one engine predicted 57 flights too optimistic
+  contributes roughly a third of the total. Cutting the worst cases
+  would improve the score far more than shaving the average error.
+- **Sensors 9 and 14 drift differently per engine.** Their readings
+  start at different baselines depending on each engine's initial wear,
+  so their absolute values aren't comparable across engines. Measuring
+  each engine's change from its own early readings would likely help.
+- **The model sees one flight at a time.** A random forest on a single
+  row can't see a trend. A model that reads a window of recent flights
+  should do better, which is the next step here.
+- **FD001 only.** FD002 and FD004 have six operating conditions, so the
+  data needs grouping by condition before any of this transfers.
+
+## Running it
+pip install -r requirements.txt
+python -m src.train
+
+
+Download the data first — see `data/README.md`.
+
+## Repo structure
