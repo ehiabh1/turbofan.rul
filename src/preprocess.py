@@ -1,3 +1,5 @@
+import numpy as np
+WINDOW = 30
 # Constant across all FD001 units - no information for the model.
 DEAD_COLS = ["op3", "s1", "s5", "s10", "s16", "s18", "s19"]
 # Two distinct values, no degradation trend. Judgement call, not constant.
