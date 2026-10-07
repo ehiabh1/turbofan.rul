@@ -43,7 +43,6 @@ def make_windows(df, window=WINDOW, features=None):
 
 
 def last_window(df, window=WINDOW, features=None):
-    def last_window(df, window=WINDOW, features=None):
     if features is None:
         features = [c for c in df.columns if c not in ("unit", "cycle", "RUL")]
     X, y = [], []
