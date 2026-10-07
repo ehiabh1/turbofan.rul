@@ -21,3 +21,37 @@ def clip_rul(df, cap=RUL_CAP):
     out = df.copy()
     out["RUL"] = out["RUL"].clip(upper=cap)
     return out
+import numpy as np
+
+WINDOW = 30
+
+
+def make_windows(df, window=WINDOW, features=None):
+    """Slide a window over each engine. Returns X (n, window, n_features), y (n,)."""
+    if features is None:
+        features = [c for c in df.columns if c not in ("unit", "cycle", "RUL")]
+    X, y = [], []
+    for _, g in df.groupby("unit"):
+        vals = g[features].values
+        ruls = g["RUL"].values
+        for end in range(window, len(g) + 1):
+            X.append(vals[end - window:end])
+            y.append(ruls[end - 1])
+    return np.array(X), np.array(y)
+
+
+def last_window(df, window=WINDOW, features=None):
+    def last_window(df, window=WINDOW, features=None):
+    if features is None:
+        features = [c for c in df.columns if c not in ("unit", "cycle", "RUL")]
+    X, y = [], []
+    for _, g in df.groupby("unit"):
+        vals = g[features].values
+        ruls = g["RUL"].values
+        X.append(vals[-window:])      # the last window rows
+        y.append(ruls[-1])      # the RUL at the very last row
+    return np.array(X), np.array(y)
+
+
+    
+   
